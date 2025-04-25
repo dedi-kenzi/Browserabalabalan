@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My Electron Browser</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+    }
+    #controls {
+      display: flex;
+      padding: 10px;
+      background: #202124;
+    }
+    #url {
+      flex: 1;
+      font-size: 16px;
+      padding: 5px;
+      border: none;
+      outline: none;
+    }
+    button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    webview {
+      width: 100%;
+      height: calc(100% - 50px);
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <button onclick="goBack()">Back</button>
+    <button onclick="goForward()">Forward</button>
+    <input id="url" type="text" value="https://www.google.com">
+    <button onclick="navigate()">Go</button>
+  </div>
+  <webview id="webview" src="https://www.google.com" style="border:none;"></webview>
+
+  <script>
+    const webview = document.getElementById('webview');
+
+    function navigate() {
+      const input = document.getElementById('url');
+      let val = input.value.trim();
+      if (!val.startsWith('http')) val = 'https://' + val;
+      webview.src = val;
+    }
+
+    function goBack() {
+      if (webview.canGoBack()) webview.goBack();
+    }
+
+    function goForward() {
+      if (webview.canGoForward()) webview.goForward();
+    }
+
+    webview.addEventListener('did-navigate-in-page', () => {
+      document.getElementById('url').value = webview.getURL();
+    });
+    webview.addEventListener('did-navigate', () => {
+      document.getElementById('url').value = webview.getURL();
+    });
+  </script>
+</body>
+</html>
